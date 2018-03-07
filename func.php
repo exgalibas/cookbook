@@ -233,6 +233,7 @@ function formatSize($bytes, $precision = 2)
     return $bytes . ' ' . $unit;
 }
 
+
 /**
  * deployer func
  * getopt
@@ -244,3 +245,27 @@ function formatSize($bytes, $precision = 2)
  * (new ReflectionMethod)->isStatic
  * file_get_contents
  */
+
+/**
+ * build post data
+ * @param array $array
+ * @param null $prefix
+ * @return array
+ */
+function demotion(array $array, $prefix = null)
+{
+    $ret = [];
+    foreach ($array as $key => $item)
+    {
+        $key = $prefix ? "{$prefix}[$key]" : $key;
+        if (is_array($item)) {
+            $ret = array_merge(
+                $ret,
+                self::demotion($item, $key)
+            );
+        } else {
+            $ret[$key] = $item;
+        }
+    }
+    return $ret;
+}
