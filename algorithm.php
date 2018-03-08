@@ -80,7 +80,46 @@ function merge(array &$arr, $start, $middle, $end)
     }
 }
 
-//
+// quick sort
+/**
+ * @param $arr
+ * @param $start
+ * @param $end
+ */
+function quickSort(&$arr, $start, $end)
+{
+    if ($start >= $end || $start < 0)
+        return;
+
+    $mid = $arr[$end];
+    $left = $start;
+    $right = $end-1;
+    while ($left < $right) {
+        while ($arr[$left] < $mid && $left < $right) {
+            $left++;
+        }
+
+        while ($arr[$right] >= $mid && $left < $right) {
+            $right--;
+        }
+
+        $tmp = $arr[$left];
+        $arr[$left] = $arr[$right];
+        $arr[$right] = $tmp;
+
+        if ($arr[$left] >= $mid) {
+            $tmp = $arr[$left];
+            $arr[$left] = $arr[$end];
+            $arr[$end] = $tmp;
+        } else {
+            $left++;
+        }
+    }
+
+
+    quickSort($arr, $start, $left-1);
+    quickSort($arr, $left+1, $end);
+}
 
 
 
