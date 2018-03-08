@@ -82,11 +82,11 @@ function merge(array &$arr, $start, $middle, $end)
 
 // quick sort
 /**
- * @param $arr
+ * @param array $arr
  * @param $start
  * @param $end
  */
-function quickSort(&$arr, $start, $end)
+function quickSort(array &$arr, $start, $end)
 {
     if ($start >= $end || $start < 0)
         return;
@@ -121,5 +121,115 @@ function quickSort(&$arr, $start, $end)
     quickSort($arr, $left+1, $end);
 }
 
+// divide-and-conquer strategy
+// find the maximum continuous sub-array
+/**
+ * @param array $arr
+ * @param $low
+ * @param $mid
+ * @param $high
+ * @return array|bool
+ */
+function findMaxMiddleArray(array $arr, $low, $mid, $high)
+{
+    if ($low < 0 || $low > $mid || $mid > $high)
+    {
+        return false;
+    }
+
+    $i = $left_id = $mid;
+    $left_max = $arr[$i];
+    $sum = 0;
+    while ($i >= $low)
+    {
+        $sum += $arr[$i];
+        if ($sum > $left_max) {
+            $left_max = $sum;
+            $left_id = $i;
+        }
+        $i--;
+    }
+
+    $i = $right_id = $mid+1;
+    $right_max = $arr[$i];
+    $sum = 0;
+
+    while ($i <= $high)
+    {
+        $sum += $arr[$i];
+        if ($sum > $right_max) {
+            $right_max = $sum;
+            $right_id = $i;
+        }
+        $i++;
+    }
+
+    return [$left_id, $right_id, $left_max+$right_max];
+}
+
+
+// heap sort
+/**
+ * @param array $arr
+ * @param $parent
+ * @param $heap_size
+ */
+function maxHeap(array &$arr, $parent, $heap_size)
+{
+    $left = 2*$parent + 1;
+    $right = $left + 1;
+
+    if ($left <= $heap_size && $arr[$left] > $arr[$parent]) {
+        $largest = $left;
+    } else {
+        $largest = $parent;
+    }
+
+    if ($right <= $heap_size && $arr[$right] > $arr[$largest]) {
+        $largest = $right;
+    }
+
+    if ($largest != $parent) {
+        $tmp = $arr[$parent];
+        $arr[$parent] = $arr[$largest];
+        $arr[$largest] = $tmp;
+
+        maxHeap($arr, $largest, $heap_size);
+    }
+}
+
+/**
+ * @param array $arr
+ */
+function buildMaxHeap(array &$arr)
+{
+    $length = count($arr);
+    $start = floor(($length-2)/2);
+    while ($start >= 0) {
+        maxHeap($arr, $start, $length-1);
+        $start--;
+    }
+}
+
+/**
+ * @param $arr
+ */
+function heapSort(&$arr)
+{
+    $heap_size = count($arr);
+    if ($heap_size <= 1){
+        return;
+    }
+    $heap_size--;
+    buildMaxHeap($arr);
+    while ($heap_size > 0) {
+        $tmp = $arr[$heap_size];
+        $arr[$heap_size] = $arr[0];
+        $arr[0] = $tmp;
+
+        $heap_size--;
+        maxHeap($arr, 0, $heap_size);
+    }
+}
 
 
